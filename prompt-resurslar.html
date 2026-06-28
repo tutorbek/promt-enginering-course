@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prompt Engineering — Resurslar: cheat-sheet, lug'at, shablonlar</title>
+  <meta name="description" content="Prompt Engineering resurslari: bir varaqli cheat-sheet (chop etiladigan), atamalar lug'ati va tayyor prompt shablonlari kutubxonasi. Bepul, o'zbek tilida.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="app.js"></script>
+  <style>
+    .pr-head { margin-top: 14px; margin-bottom: 18px; }
+    .pr-head h1 { font: 800 26px var(--font-display), system-ui; margin: 0 0 6px; letter-spacing: -.02em; }
+    .pr-head p { color: var(--muted); font-size: 14.5px; margin: 0; max-width: 640px; line-height: 1.6; }
+    .pr-tabs { display: inline-flex; gap: 4px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 4px; margin-bottom: 20px; flex-wrap: wrap; }
+    .pr-tab { border: none; background: none; padding: 9px 16px; border-radius: 9px; font: 700 13.5px var(--font-display); color: var(--muted); cursor: pointer; transition: .13s; }
+    .pr-tab.on { background: var(--accent); color: #fff; }
+    .pr-sec { display: none; }
+    .pr-sec.on { display: block; }
+
+    /* CHEAT-SHEET */
+    .cs-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+    .cs-bar h2 { font: 800 19px var(--font-display); margin: 0; }
+    .cs-print { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 11px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; border: none; font: 700 13.5px var(--font-display); cursor: pointer; transition: .14s; }
+    .cs-print:hover { transform: translateY(-2px); }
+    .cs-print svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+    #cheatsheet { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 26px; }
+    .cs-title { text-align: center; margin-bottom: 18px; }
+    .cs-title .b { font: 700 11px var(--font-display); letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+    .cs-title h3 { font: 800 22px var(--font-display); margin: 4px 0 0; }
+    .cs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
+    .cs-card { border: 1px solid var(--border); border-radius: 13px; padding: 14px 16px; background: var(--bg); break-inside: avoid; }
+    .cs-card h4 { display: flex; align-items: center; gap: 8px; font: 800 14px var(--font-display); margin: 0 0 8px; color: var(--text); }
+    .cs-card h4 .n { width: 22px; height: 22px; border-radius: 7px; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font: 800 12px var(--font-display); flex-shrink: 0; }
+    .cs-card ul { margin: 0; padding-left: 17px; }
+    .cs-card li { font-size: 13px; line-height: 1.55; margin-bottom: 5px; color: var(--text); }
+    .cs-card li b { color: var(--accent); }
+    .cs-card code { font: 600 12px var(--font-mono), monospace; background: var(--surface); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px; }
+    .cs-foot { text-align: center; margin-top: 16px; font-size: 11.5px; color: var(--muted); }
+
+    /* GLOSSARY */
+    .gl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 13px; }
+    .gl-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 15px 17px; }
+    .gl-term { font: 800 15.5px var(--font-display); color: var(--accent); margin: 0 0 5px; }
+    .gl-term .en { font: 600 11.5px var(--font-display); color: var(--muted); text-transform: none; }
+    .gl-def { font-size: 13.5px; line-height: 1.55; color: var(--text); margin: 0; }
+
+    /* TEMPLATES */
+    .tp-cat { font: 800 13px var(--font-display); text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 22px 2px 12px; }
+    .tp-cat:first-child { margin-top: 0; }
+    .tp-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 15px 17px; margin-bottom: 12px; }
+    .tp-h { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 9px; }
+    .tp-h .t { font: 800 14.5px var(--font-display); color: var(--text); }
+    .tp-copy { flex-shrink: 0; display: inline-flex; align-items: center; gap: 6px; padding: 7px 13px; border-radius: 9px; background: var(--bg); border: 1px solid var(--border); color: var(--accent); font: 700 12px var(--font-display); cursor: pointer; transition: .13s; }
+    .tp-copy:hover { border-color: var(--accent); background: var(--accent-soft); }
+    .tp-copy svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+    .tp-copy.done { color: var(--ok); border-color: var(--ok); }
+    .tp-body { font: 500 13.5px var(--font-mono), ui-monospace, monospace; line-height: 1.6; color: var(--text); background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; white-space: pre-wrap; word-break: break-word; }
+    .tp-body .v { color: var(--accent); font-weight: 700; }
+
+    @media print {
+      body * { visibility: hidden; }
+      #cheatsheet, #cheatsheet * { visibility: visible; }
+      #cheatsheet { position: absolute; left: 0; top: 0; width: 100%; border: none; padding: 0; }
+      .cs-card { border: 1px solid #ccc; }
+    }
+  </style>
+</head>
+<body>
+  <main class="tool-page container">
+    <div class="breadcrumb"><a href="index.html">Bosh sahifa</a> / <a href="kurslar.html">Kurslar</a> / <a href="prompt-kurs.html">Prompt Engineering</a> / Resurslar</div>
+    <div class="pr-head">
+      <h1>Prompt Engineering — Resurslar</h1>
+      <p>Kursdagi bilimlarni amalda ishlatish uchun: bir varaqli cheat-sheet, atamalar lug'ati va tayyor prompt shablonlari. Saqlang, chop eting, nusxalang.</p>
+    </div>
+
+    <div class="pr-tabs" id="tabs">
+      <button class="pr-tab on" data-t="cheat">Cheat-sheet</button>
+      <button class="pr-tab" data-t="gloss">Atamalar lug'ati</button>
+      <button class="pr-tab" data-t="tpl">Prompt kutubxonasi</button>
+    </div>
+
+    <!-- CHEAT-SHEET -->
+    <section class="pr-sec on" id="sec-cheat">
+      <div class="cs-bar">
+        <h2>Bir varaqli cheat-sheet</h2>
+        <button class="cs-print" id="printBtn"><svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Chop etish / PDF saqlash</button>
+      </div>
+      <div id="cheatsheet">
+        <div class="cs-title"><h3>Prompt Engineering — asosiy qoidalar</h3></div>
+        <div class="cs-grid">
+          <div class="cs-card"><h4><span class="n">1</span>Kuchli prompt anatomiyasi</h4><ul>
+            <li><b>Rol</b> — AI kim bo'lsin</li><li><b>Vazifa</b> — nima qilsin</li><li><b>Kontekst</b> — qaysi sharoitda</li><li><b>Format</b> — natija ko'rinishi</li><li><b>Misol</b> — namuna (ixtiyoriy)</li></ul></div>
+          <div class="cs-card"><h4><span class="n">2</span>Aniqlik: 4 savol</h4><ul>
+            <li><b>Kim uchun?</b> — auditoriya</li><li><b>Nima?</b> — natija turi</li><li><b>Qancha?</b> — hajm</li><li><b>Qanday?</b> — uslub/ohang</li></ul></div>
+          <div class="cs-card"><h4><span class="n">3</span>Ko'rsatma: qil + qilma</h4><ul>
+            <li>Nima <b>qilishni</b> ayting</li><li>Nima <b>qilmaslikni</b> ham ayting</li><li>Masalan: <code>muqaddima yozma</code></li><li>Ortiqcha so'zdan qoching</li></ul></div>
+          <div class="cs-card"><h4><span class="n">4</span>Misol berish (few-shot)</h4><ul>
+            <li>2-3 ta namuna bering</li><li>Bir xil formatda: kirish → chiqish</li><li>Oxirida yangi kirishni qoldiring</li></ul></div>
+          <div class="cs-card"><h4><span class="n">5</span>Chain-of-Thought</h4><ul>
+            <li>Murakkab masalada: <code>qadamba-qadam fikrla</code></li><li>Oraliq qadamlarni so'rang</li><li>Yakuniy javobni alohida so'rang</li></ul></div>
+          <div class="cs-card"><h4><span class="n">6</span>Format boshqaruvi</h4><ul>
+            <li>Ro'yxat / jadval / sarlavha so'rang</li><li>Uzunlikni belgilang (<code>120 so'z</code>)</li><li>Avtomatlashtirish uchun: <code>FAQAT JSON</code></li></ul></div>
+          <div class="cs-card"><h4><span class="n">7</span>Xatodan himoya</h4><ul>
+            <li><code>Bilmasang — bilmayman de</code></li><li>Manba so'rang va tekshiring</li><li>Muhim faktni mustaqil tasdiqlang</li></ul></div>
+          <div class="cs-card"><h4><span class="n">8</span>Xavfsizlik va iteratsiya</h4><ul>
+            <li>Parol, JSHSHIR, karta — <b>berma</b></li><li>Birinchi javob — yakun emas</li><li><b>So'ra → bahola → tuzat</b></li></ul></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GLOSSARY -->
+    <section class="pr-sec" id="sec-gloss">
+      <div class="gl-grid" id="glGrid"></div>
+    </section>
+
+    <!-- TEMPLATES -->
+    <section class="pr-sec" id="sec-tpl">
+      <div id="tplWrap"></div>
+    </section>
+  </main>
+
+  <script>
+    // Tabs
+    const tabs = document.getElementById("tabs");
+    tabs.addEventListener("click", e => {
+      const b = e.target.closest(".pr-tab"); if (!b) return;
+      tabs.querySelectorAll(".pr-tab").forEach(x => x.classList.toggle("on", x === b));
+      document.querySelectorAll(".pr-sec").forEach(s => s.classList.remove("on"));
+      document.getElementById("sec-" + b.dataset.t).classList.add("on");
+    });
+    document.getElementById("printBtn").addEventListener("click", () => window.print());
+
+    // Glossary
+    const GLOSS = [
+      ["Prompt", "prompt", "AI'ga yuboriladigan ko'rsatma yoki so'rov. Natija sifatining asosiy qismi promptga bog'liq."],
+      ["Prompt Engineering", "prompt engineering", "AI'dan aniq, sifatli natija olish uchun promptlarni to'g'ri tuzish, sinash va yaxshilash ko'nikmasi."],
+      ["LLM", "Large Language Model", "Katta til modeli — ulkan matnlar ustida o'qitilgan, keyingi so'zni bashorat qiluvchi model (ChatGPT, Claude)."],
+      ["Token", "token", "Modelning matnni qayta ishlash birligi — odatda so'z yoki so'z bo'lagi."],
+      ["Kontekst oynasi", "context window", "Modelning bir vaqtda 'ko'ra oladigan' matn hajmi. Juda uzun suhbatda boshidagi ma'lumot 'esdan chiqishi' mumkin."],
+      ["Zero-shot", "zero-shot", "Modelga misol bermasdan, faqat ko'rsatma berib vazifa so'rash."],
+      ["Few-shot", "few-shot", "Modelga bir nechta namuna (kirish → chiqish) berib, kerakli format yoki uslubni o'rgatish."],
+      ["Chain-of-Thought", "CoT", "Modeldan javobdan oldin qadamba-qadam mulohaza qilishni so'rash — murakkab masalalarda aniqlikni oshiradi."],
+      ["System prompt", "system prompt", "Modelning umumiy rolini va xulq-atvorini belgilovchi boshlang'ich ko'rsatma."],
+      ["Temperature", "temperature", "Javobning ijodiyligi/tasodifiyligi darajasi. Past — aniq va izchil; yuqori — rang-barang va ijodiy."],
+      ["Gallyutsinatsiya", "hallucination", "AI'ning haqiqatga to'g'ri kelmaydigan, ammo ishonchli ko'rinadigan javob to'qishi."],
+      ["Prompt injection", "prompt injection", "AI tizimiga yashirin/zararli ko'rsatma kiritib, uni dastlabki vazifasidan og'dirish hujumi."],
+      ["RAG", "Retrieval-Augmented Generation", "Modelga tashqi ma'lumot (hujjat, matn)ni topib berib, javobni o'sha manbaga tayantirish — aniqroq va tasdiqlangan natija olish yondashuvi."],
+      ["Multimodal", "multimodal", "Modelning matndan tashqari rasm, audio, video kabi boshqa turdagi ma'lumot bilan ham ishlay olishi."],
+      ["Freymvork", "RTF / RACE / CRISPE", "Promptni tuzishda muhim elementlarni unutmaslik uchun tayyor aqliy shablon (Rol·Vazifa·Format va h.k.)."],
+    ];
+    document.getElementById("glGrid").innerHTML = GLOSS.map(g =>
+      `<div class="gl-card"><div class="gl-term">${g[0]} <span class="en">— ${g[1]}</span></div><p class="gl-def">${g[2]}</p></div>`).join("");
+
+    // Templates
+    const TPL = {
+      "Kontent va marketing": [
+        ["Blog maqola rejasi", "Sen tajribali kontent-strategsan. \"[MAVZU]\" mavzusida [AUDITORIYA] uchun blog maqola rejasini tuz. 5-7 bo'lim, har biriga qisqa izoh. Maqsad — [MAQSAD]."],
+        ["Ijtimoiy tarmoq posti", "Sen SMM mutaxassisisan. [BIZNES] uchun [PLATFORMA] posti yoz. Maqsad: [MAQSAD]. Auditoriya: [AUDITORIYA]. Ohang: [OHANG]. 3-4 jumla + 1 chaqiruv + 3 hashtag."],
+        ["Sarlavha variantlari", "[MAHSULOT/MAVZU] uchun 7 ta jozibali sarlavha variantini yoz. Har biri 60 belgidan oshmasin, foyda va'da qilsin. Turli uslublarda (savol, raqamli, qiziqtiruvchi)."],
+      ],
+      "Kod va texnik": [
+        ["Kod yozish", "Sen tajribali [TIL] dasturchisisan. Quyidagi vazifani bajaradigan kod yoz: [VAZIFA]. Kodni izohlar bilan, sodda va o'qiladigan qil. Oxirida qisqa ishlatish misolini ko'rsat."],
+        ["Kodni tushuntirish", "Quyidagi kod nima qilishini menga [DARAJA: boshlovchi/o'rta] darajada, qadamba-qadam tushuntir. Murakkab atamalarni soddalashtir. Kod: [KOD]"],
+        ["Xato (bug) topish", "Quyidagi kodda xato bor — u [KUTILGAN NATIJA] o'rniga [HOZIRGI NATIJA] beradi. Xatoni top, sababini tushuntir va tuzatilgan versiyani ber. Kod: [KOD]"],
+      ],
+      "Tahlil va biznes": [
+        ["Matn xulosasi", "Quyidagi matnni 3 ta asosiy fikr ko'rinishida xulosa qil. Har bir fikr bitta jumla bo'lsin, texnik bilimi yo'q odam ham tushunsin. Matn: [MATN]"],
+        ["Sharh tahlili (JSON)", "Quyidagi mijoz sharhini tahlil qil va FAQAT JSON qaytar: { \"kayfiyat\": \"ijobiy/salbiy/neytral\", \"ball\": 1-5 son, \"mavzular\": [ro'yxat], \"qisqacha\": \"bir jumla\" }. Sharh: [SHARH]"],
+        ["Rasmiy email", "Sen biznes-yordamchisan. Quyidagi eslatmalardan [QABUL QILUVCHI] uchun rasmiy, xushmuomala email yoz: [ESLATMALAR]. 4-5 jumla, oxirida keyingi qadam taklif qil."],
+      ],
+      "Ta'lim": [
+        ["Mavzuni tushuntirish", "Sen sabrli o'qituvchisan. \"[MAVZU]\" tushunchasini [AUDITORIYA] uchun tanish kundalik misollar orqali, oddiy tilda tushuntir. 5-6 jumla."],
+        ["Test yaratish", "\"[MAVZU]\" bo'yicha [SON] ta ko'p variantli test savoli tuz. Har savolda 4 variant, faqat bittasi to'g'ri. Oxirida to'g'ri javoblarni va qisqa izohni alohida ber."],
+      ],
+    };
+    document.getElementById("tplWrap").innerHTML = Object.keys(TPL).map(cat =>
+      `<div class="tp-cat">${cat}</div>` + TPL[cat].map(t => {
+        const body = t[1].replace(/\[([^\]]+)\]/g, '<span class="v">[$1]</span>');
+        return `<div class="tp-card"><div class="tp-h"><span class="t">${t[0]}</span><button class="tp-copy"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Nusxalash</button></div><div class="tp-body" data-raw="${t[1].replace(/"/g, "&quot;")}">${body}</div></div>`;
+      }).join("")).join("");
+    document.getElementById("tplWrap").addEventListener("click", e => {
+      const b = e.target.closest(".tp-copy"); if (!b) return;
+      const raw = b.closest(".tp-card").querySelector(".tp-body").getAttribute("data-raw");
+      navigator.clipboard.writeText(raw).then(() => {
+        b.classList.add("done"); b.lastChild.textContent = " Nusxalandi";
+        setTimeout(() => { b.classList.remove("done"); b.lastChild.textContent = " Nusxalash"; }, 1600);
+      }).catch(() => {});
+    });
+  </script>
+</body>
+</html>

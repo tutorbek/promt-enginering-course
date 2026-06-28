@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prompt Engineering kursi — Noldan mukammallikgacha</title>
+  <meta name="description" content="Bepul interaktiv Prompt Engineering kursi o'zbek tilida: sun'iy intellekt (ChatGPT, Claude) bilan to'g'ri ishlashni noldan o'rganing. Maqola, rasm, test va sertifikat bilan.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="app.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script defer src="prompt-kurs-data.js"></script>
+  <script defer src="prompt-kurs-data2.js"></script>
+  <script defer src="prompt-kurs-data3.js"></script>
+  <script defer src="prompt-kurs-data4.js"></script>
+  <script defer src="prompt-kurs-practice.js"></script>
+  <script defer src="prompt-kurs-exam.js"></script>
+  <script defer src="prompt-cert-draw.js"></script>
+  <style>
+    body[data-page="prompt-kurs.html"] .app-footer { display: none !important; }
+    .pk-wrap { display: grid; grid-template-columns: 300px 1fr; gap: 22px; align-items: start; max-width: 1180px; margin: 0 auto; }
+    @media (max-width: 900px) { .pk-wrap { grid-template-columns: 1fr; } }
+
+    /* === SIDEBAR === */
+    .pk-side { position: sticky; top: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 16px; max-height: calc(100vh - 28px); overflow: auto; }
+    @media (max-width: 900px) { .pk-side { position: relative; top: 0; max-height: none; } }
+    /* Yon panel uchun ingichka scrollbar (AI Agentlar kursi bilan bir xil) */
+    .pk-side { scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+    .pk-side::-webkit-scrollbar { width: 9px; }
+    .pk-side::-webkit-scrollbar-track { background: transparent; }
+    .pk-side::-webkit-scrollbar-thumb { background: var(--border); border-radius: 9px; border: 2px solid transparent; background-clip: padding-box; }
+    .pk-side::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+    .pk-side-h { display: flex; align-items: center; gap: 11px; margin-bottom: 14px; }
+    .pk-side-h .ic { width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); display: grid; place-items: center; flex-shrink: 0; }
+    .pk-side-h .ic svg { width: 22px; height: 22px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .pk-side-h .t { font: 800 15px var(--font-display), system-ui; color: var(--text); line-height: 1.2; }
+    .pk-side-h .s { font: 600 11.5px var(--font-display); color: var(--muted); margin-top: 2px; }
+    .pk-prog { margin-bottom: 16px; }
+    .pk-prog-top { display: flex; justify-content: space-between; font: 700 11.5px var(--font-display); color: var(--muted); margin-bottom: 6px; }
+    .pk-prog-bar { height: 7px; background: var(--bg); border-radius: 5px; overflow: hidden; }
+    .pk-prog-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); border-radius: 5px; transition: width .35s; }
+    .pk-mod { margin-bottom: 1px; }
+    .pk-mod-t { display: flex; align-items: center; gap: 9px; width: 100%; background: transparent; border: none; cursor: pointer; margin: 3px 0 1px; padding: 6px 8px; border-radius: 10px; text-align: left; transition: background .14s; }
+    .pk-mod-t:hover { background: var(--bg); }
+    .pk-mod.open > .pk-mod-t { background: var(--accent-soft); }
+    .pk-mod-t .ms { width: 23px; height: 23px; flex-shrink: 0; border-radius: 7px; display: grid; place-items: center; font: 800 11.5px var(--font-display), system-ui; background: var(--surface); border: 1.5px solid var(--border); color: var(--muted); transition: .14s; }
+    .pk-mod.open > .pk-mod-t .ms { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .pk-mod-t.alldone .ms { background: var(--ok); border-color: var(--ok); color: #fff; }
+    .pk-mod-t .ms svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; }
+    .pk-mod-t .mt { flex: 1; min-width: 0; line-height: 1.25; font: 700 12px var(--font-display), system-ui; color: var(--text); }
+    .pk-mod.open > .pk-mod-t .mt { color: var(--accent); }
+    .pk-mod-t .mc { font: 700 10.5px var(--font-mono), monospace; color: var(--muted); flex-shrink: 0; }
+    .pk-mod-t .chev { width: 14px; height: 14px; flex-shrink: 0; stroke: var(--muted); fill: none; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; transition: transform .18s; }
+    .pk-mod.open > .pk-mod-t .chev { transform: rotate(90deg); stroke: var(--accent); }
+    .pk-mod-t.static { cursor: default; padding: 9px 8px 3px; font: 800 10px var(--font-display); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+    .pk-mod-t.static:hover { background: transparent; }
+    .pk-mod-lessons { display: none; padding-left: 9px; margin: 0 0 4px 19px; border-left: 1.5px solid var(--border); }
+    .pk-mod.open > .pk-mod-lessons { display: block; animation: pkAcc .18s ease; }
+    @keyframes pkAcc { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
+    .pk-ls { display: flex; align-items: center; gap: 9px; width: 100%; text-align: left; background: transparent; border: none; padding: 6px 9px; border-radius: 9px; cursor: pointer; font-family: inherit; transition: background .13s; }
+    .pk-ls:hover:not(.locked) { background: var(--bg); }
+    .pk-ls.cur { background: var(--accent-soft); }
+    .pk-ls.locked { cursor: not-allowed; opacity: .5; }
+    .pk-ls .node { width: 21px; height: 21px; border-radius: 50%; flex-shrink: 0; display: grid; place-items: center; border: 2px solid var(--border); background: var(--surface); color: var(--muted); font: 800 10px var(--font-display); }
+    .pk-ls.done .node { background: var(--ok); border-color: var(--ok); color: #fff; }
+    .pk-ls.cur .node { border-color: var(--accent); color: var(--accent); }
+    .pk-ls .node svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 3; }
+    .pk-ls .nm { flex: 1; min-width: 0; font: 600 12.5px var(--font-display), system-ui; color: var(--text); line-height: 1.25; }
+    .pk-ls.cur .nm { color: var(--accent); font-weight: 700; }
+    .pk-cert-btn { width: 100%; margin-top: 14px; padding: 12px; border: none; border-radius: 12px; background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; font: 800 13.5px var(--font-display), system-ui; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: .15s; }
+    .pk-cert-btn:disabled { background: var(--bg); color: var(--muted); cursor: not-allowed; border: 1px solid var(--border); }
+    .pk-cert-btn:not(:disabled):hover { transform: translateY(-2px); box-shadow: 0 8px 18px -6px rgba(217,119,6,.5); }
+    .pk-cert-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* === MAIN ARTICLE === */
+    .pk-main { min-width: 0; }
+    .pk-crumb { font: 600 12.5px var(--font-display); color: var(--muted); margin-bottom: 10px; }
+    .pk-crumb b { color: var(--accent); }
+    .pk-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 32px 36px; box-shadow: var(--shadow); }
+    @media (max-width: 600px) { .pk-card { padding: 22px 18px; } }
+    .pk-h1 { font: 800 27px var(--font-display), system-ui; letter-spacing: -.02em; line-height: 1.18; margin: 0 0 8px; color: var(--text); }
+    @media (max-width: 600px) { .pk-h1 { font-size: 22px; } }
+    .pk-meta { display: flex; align-items: center; gap: 14px; color: var(--muted); font: 600 12.5px var(--font-display); margin-bottom: 22px; }
+    .pk-meta span { display: inline-flex; align-items: center; gap: 5px; }
+    .pk-meta svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.2; }
+
+    /* article typography */
+    .pk-article { color: var(--text); font-size: 16px; line-height: 1.75; }
+    .pk-article > *:first-child { margin-top: 0; }
+    .pk-lead { font-size: 17.5px; line-height: 1.7; color: var(--text); background: var(--bg); border-left: 3px solid var(--accent); border-radius: 0 12px 12px 0; padding: 14px 18px; margin: 0 0 22px; }
+    .pk-article h3 { font: 800 19.5px var(--font-display), system-ui; color: var(--text); margin: 30px 0 12px; letter-spacing: -.01em; }
+    .pk-article h4 { font: 800 16px var(--font-display), system-ui; color: var(--text); margin: 22px 0 8px; }
+    .pk-article p { margin: 0 0 15px; }
+    .pk-article ul, .pk-article ol { margin: 0 0 16px; padding-left: 22px; }
+    .pk-article li { margin-bottom: 8px; }
+    .pk-article b, .pk-article strong { font-weight: 700; color: var(--text); }
+    .pk-article code { font: 600 14px var(--font-mono), monospace; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 1.5px 6px; color: var(--accent); }
+    .pk-article a { color: var(--accent); }
+
+    /* callouts */
+    .pk-note, .pk-tip, .pk-warn, .pk-key { display: flex; gap: 12px; padding: 14px 16px; border-radius: 13px; margin: 18px 0; font-size: 15px; line-height: 1.6; }
+    .pk-note { background: var(--accent-soft); border: 1px solid var(--accent-soft2, var(--border)); }
+    .pk-tip { background: var(--ok-bg); border: 1px solid var(--ok); }
+    .pk-warn { background: var(--warn-bg); border: 1px solid var(--warn); }
+    .pk-key { background: #fef9ec; border: 1px solid #f3d896; }
+    .pk-note .ci, .pk-tip .ci, .pk-warn .ci, .pk-key .ci { flex-shrink: 0; width: 24px; height: 24px; }
+    .pk-note .ci svg, .pk-tip .ci svg, .pk-warn .ci svg, .pk-key .ci svg { width: 24px; height: 24px; stroke-width: 2.1; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
+    .pk-note .ci { color: var(--accent); } .pk-tip .ci { color: var(--ok); } .pk-warn .ci { color: var(--warn); } .pk-key .ci { color: #d97706; }
+    .pk-note b:first-child, .pk-tip b:first-child, .pk-warn b:first-child, .pk-key b:first-child { display: block; margin-bottom: 2px; }
+
+    /* prompt examples */
+    .pk-ex { border-radius: 13px; padding: 14px 16px; margin: 14px 0; font: 500 14.5px var(--font-mono), ui-monospace, monospace; line-height: 1.6; position: relative; white-space: pre-wrap; word-break: break-word; }
+    .pk-ex .tag { position: absolute; top: -9px; left: 14px; font: 800 10px var(--font-display); text-transform: uppercase; letter-spacing: .5px; padding: 2px 9px; border-radius: 999px; }
+    .pk-bad { background: var(--err-bg); border: 1px solid var(--err); color: #7f1d1d; }
+    .pk-bad .tag { background: var(--err); color: #fff; }
+    .pk-good { background: var(--ok-bg); border: 1px solid var(--ok); color: #14532d; }
+    .pk-good .tag { background: var(--ok); color: #fff; }
+
+    /* figure */
+    .pk-fig { margin: 26px 0; text-align: center; }
+    .pk-fig svg { max-width: 100%; height: auto; border-radius: 18px; border: 1px solid var(--border); background: #fff; box-shadow: 0 10px 30px -14px rgba(49,46,129,.28); }
+    .pk-fig figcaption { font: 600 12.5px var(--font-display); color: var(--muted); margin-top: 11px; display: inline-flex; align-items: center; gap: 7px; }
+    .pk-fig figcaption::before { content: ""; width: 14px; height: 2px; border-radius: 2px; background: var(--accent); opacity: .6; }
+    .pk-fig figcaption::after { content: ""; width: 14px; height: 2px; border-radius: 2px; background: var(--accent); opacity: .6; }
+
+    /* === QUIZ === */
+    .pk-quiz { margin-top: 30px; padding-top: 26px; border-top: 2px dashed var(--border); }
+    .pk-quiz-h { display: flex; align-items: center; gap: 10px; font: 800 18px var(--font-display); color: var(--text); margin-bottom: 6px; }
+    .pk-quiz-h .ic { width: 32px; height: 32px; border-radius: 9px; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; }
+    .pk-quiz-h .ic svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+    .pk-quiz-sub { color: var(--muted); font-size: 13.5px; margin: 0 0 18px; }
+    .pk-q { margin-bottom: 20px; }
+    .pk-q-t { font: 700 15.5px var(--font-display), system-ui; color: var(--text); margin-bottom: 10px; line-height: 1.4; }
+    .pk-q-t .n { color: var(--accent); }
+    .pk-opt { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--bg); border: 1.5px solid var(--border); border-radius: 12px; cursor: pointer; transition: .12s; margin-bottom: 8px; font: 600 15px var(--font-display), system-ui; color: var(--text); }
+    .pk-opt:hover { border-color: var(--accent); }
+    .pk-opt.sel { border-color: var(--accent); background: var(--accent-soft); }
+    .pk-opt.ok { border-color: var(--ok); background: var(--ok-bg); color: #14532d; }
+    .pk-opt.no { border-color: var(--err); background: var(--err-bg); color: #7f1d1d; }
+    .pk-opt .k { width: 26px; height: 26px; border-radius: 7px; background: var(--surface); border: 1px solid var(--border); display: grid; place-items: center; font: 800 12px var(--font-display); color: var(--muted); flex-shrink: 0; }
+    .pk-opt.sel .k { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .pk-opt.ok .k { background: var(--ok); color: #fff; border-color: var(--ok); }
+    .pk-opt.no .k { background: var(--err); color: #fff; border-color: var(--err); }
+    /* ===== Dark mode — dars ichidagi bloklar matni ko'rinishi (kontrast tuzatish) ===== */
+    [data-theme="dark"] .pk-key { background: #2a2410; border-color: #5c4a16; }
+    [data-theme="dark"] .pk-bad { color: #fecaca; }
+    [data-theme="dark"] .pk-good { color: #bbf7d0; }
+    [data-theme="dark"] .pk-opt.ok { color: #bbf7d0; }
+    [data-theme="dark"] .pk-opt.no { color: #fecaca; }
+    .pk-quiz-foot { display: flex; align-items: center; gap: 14px; margin-top: 18px; flex-wrap: wrap; }
+    .pk-btn { padding: 13px 24px; border: none; border-radius: 12px; font: 800 14.5px var(--font-display), system-ui; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: .14s; }
+    .pk-btn-pri { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; box-shadow: 0 6px 16px -6px rgba(91,91,214,.5); }
+    .pk-btn-pri:hover { transform: translateY(-2px); }
+    .pk-btn-pri:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+    .pk-btn-ok { background: linear-gradient(135deg, var(--ok), #16a34a); color: #fff; }
+    .pk-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+    .pk-result { font: 700 14px var(--font-display); }
+    .pk-result.pass { color: var(--ok); } .pk-result.fail { color: var(--err); }
+
+    /* === AMALIY MASHQ === */
+    .pk-practice { margin-top: 28px; padding: 20px 22px; border-radius: 16px; background: linear-gradient(135deg, var(--accent-soft), var(--bg)); border: 1px solid var(--border); }
+    .pk-practice-h { display: flex; align-items: center; gap: 10px; font: 800 17px var(--font-display); color: var(--text); margin-bottom: 4px; }
+    .pk-practice-h .ic { width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; display: grid; place-items: center; flex-shrink: 0; }
+    .pk-practice-h .ic svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+    .pk-practice .task { font-size: 15px; line-height: 1.6; color: var(--text); margin: 6px 0 13px; }
+    .pk-practice textarea { width: 100%; min-height: 110px; padding: 13px 15px; border: 1.5px solid var(--border); border-radius: 12px; font: 500 14.5px var(--font-mono), ui-monospace, monospace; line-height: 1.6; color: var(--text); background: var(--surface); resize: vertical; }
+    .pk-practice textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    .pk-reveal { margin-top: 12px; padding: 11px 18px; border-radius: 11px; background: var(--surface); color: var(--accent); border: 1px solid var(--accent); font: 700 13.5px var(--font-display); cursor: pointer; transition: .14s; }
+    .pk-reveal:hover { background: var(--accent-soft); }
+    .pk-sample { margin-top: 14px; }
+    .pk-checklist { margin-top: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 13px 16px; }
+    .pk-checklist b { display: block; font: 800 13.5px var(--font-display); color: var(--text); margin-bottom: 9px; }
+    .pk-checklist label { display: flex; align-items: flex-start; gap: 9px; font-size: 14px; color: var(--text); margin-bottom: 8px; cursor: pointer; line-height: 1.45; }
+    .pk-checklist label:last-child { margin-bottom: 0; }
+    .pk-checklist input { margin-top: 3px; width: 16px; height: 16px; accent-color: var(--accent); flex-shrink: 0; }
+
+    /* empty / welcome */
+    .pk-welcome { text-align: center; padding: 30px 10px; }
+    .pk-welcome .wic { width: 76px; height: 76px; border-radius: 22px; margin: 0 auto 16px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); display: grid; place-items: center; box-shadow: 0 12px 30px -10px rgba(91,91,214,.5); }
+    .pk-welcome .wic svg { width: 38px; height: 38px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* === CERT MODAL === */
+    .pk-modal { position: fixed; inset: 0; z-index: 200; display: none; align-items: center; justify-content: center; padding: 18px; background: rgba(15,16,30,.62); backdrop-filter: blur(4px); }
+    .pk-modal.show { display: flex; }
+    .pk-modal-box { background: var(--surface); border-radius: 20px; padding: 22px; max-width: 780px; width: 100%; max-height: 92vh; overflow: auto; box-shadow: 0 30px 80px -20px rgba(0,0,0,.5); }
+    .pk-modal-box h3 { margin: 0 0 4px; font: 800 18px var(--font-display); color: var(--text); }
+    .pk-modal-box .sub { font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+    .pk-name-row { display: flex; gap: 11px; align-items: center; margin-bottom: 14px; flex-wrap: wrap; }
+    .pk-name-row label { font: 700 13px var(--font-display); color: var(--muted); }
+    .pk-name-row input { flex: 1; min-width: 170px; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 11px; font: 600 15px var(--font-display); color: var(--text); background: var(--bg); }
+    .pk-name-row input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    .pk-canvas-wrap { background: var(--bg); border: 1px solid var(--border); border-radius: 14px; padding: 10px; display: flex; justify-content: center; }
+    .pk-canvas-wrap canvas { max-width: 100%; height: auto; border-radius: 7px; box-shadow: 0 6px 20px -8px rgba(0,0,0,.28); }
+    .pk-modal-actions { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+    .pk-modal-actions .pk-btn { flex: 1; min-width: 130px; justify-content: center; }
+    .pk-btn-sec { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+  </style>
+</head>
+<body>
+  <main class="tool-page container" style="max-width:1220px">
+    <div class="breadcrumb"><a href="index.html">Bosh sahifa</a> / <a href="kurslar.html">Kurslar</a> / Prompt Engineering</div>
+
+    <section class="ch-hero">
+      <svg class="ch-orbit" viewBox="0 0 318 318" fill="none" aria-hidden="true">
+        <circle class="ring2" cx="159" cy="159" r="116" stroke-width="1.5"/>
+        <circle class="ring" cx="159" cy="159" r="116" stroke-width="2.5" stroke-dasharray="40 200" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" from="0 159 159" to="360 159 159" dur="7s" repeatCount="indefinite"/></circle>
+        <circle class="ring2" cx="159" cy="159" r="74" stroke-width="1.5" stroke-dasharray="3 6"/>
+        <circle class="dot" cx="159" cy="43" r="5"/><circle class="dot d2" cx="275" cy="159" r="4.5"/><circle class="dot" cx="159" cy="275" r="5"/><circle class="dot d2" cx="43" cy="159" r="4.5"/>
+        <circle r="5" class="dot"><animateMotion dur="7s" repeatCount="indefinite" path="M159,43 A116,116 0 1,1 158,43"/></circle>
+        <rect class="tile" x="123" y="123" width="72" height="72" rx="20"/><rect x="123" y="123" width="72" height="34" rx="20" fill="#fff" opacity=".16"/>
+        <g class="gico" transform="translate(159 159)"><path d="M0 -12 C1.2 -4 4 -1.2 12 0 C4 1.2 1.2 4 0 12 C-1.2 4 -4 1.2 -12 0 C-4 -1.2 -1.2 -4 0 -12 Z" fill="#fff" stroke="none"/><path d="M9.5 -10 C9.8 -8 10.5 -7.3 12.5 -7 C10.5 -6.7 9.8 -6 9.5 -4 C9.2 -6 8.5 -6.7 6.5 -7 C8.5 -7.3 9.2 -8 9.5 -10 Z" fill="#fff" stroke="none"/></g>
+      </svg>
+      <div class="ch-h-in">
+        <h1>AI bilan to'g'ri <span class="g">gaplashishni</span> o'rganing</h1>
+        <p>Prompt Engineering — ChatGPT va boshqa sun'iy intellektlardan aniq, sifatli natija olish san'ati. Noldan mukammallikgacha, jonli misollar va interaktiv mashqlar bilan.</p>
+        <div class="ch-h-row"><a class="ch-cta" href="prompt-kurs.html#kursBosh">Kursni boshlash <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a></div>
+        <div class="ch-stats"><div class="ch-stat"><b id="chStatM">—</b><span>Modul</span></div><div class="ch-stat"><b id="chStatL">—</b><span>Dars</span></div><div class="ch-stat"><b>QR</b><span>Sertifikat</span></div></div>
+      </div>
+    </section>
+    <script>(function(){function upd(){var k=Object.keys(window).filter(function(x){return /_COURSE$/.test(x)})[0];var C=k&&window[k];if(!C||!C.modules)return;var L=0;C.modules.forEach(function(m){L+=(m.lessons||[]).length});var a=document.getElementById('chStatM'),b=document.getElementById('chStatL');if(a)a.textContent=C.modules.length;if(b)b.textContent=L;}(function s(){upd();if(document.readyState!=='complete')setTimeout(s,80);})();window.addEventListener('load',upd);})();</script>
+
+    <div class="pk-wrap" id="kursBosh">
+      <aside class="pk-side">
+        <div class="pk-prog">
+          <div class="pk-prog-top"><span id="progTxt">0 / 0 dars</span><span id="progPct">0%</span></div>
+          <div class="pk-prog-bar"><div class="pk-prog-fill" id="progFill" style="width:0"></div></div>
+        </div>
+        <nav id="nav" aria-label="Kurs darslari navigatsiyasi"></nav>
+        <a href="prompt-resurslar.html" style="display:flex;align-items:center;justify-content:center;gap:7px;margin-top:10px;padding:10px;border-radius:11px;background:var(--bg);border:1px solid var(--border);color:var(--accent);font:700 12.5px var(--font-display),system-ui;text-decoration:none">
+          <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          Resurslar
+        </a>
+      </aside>
+
+      <section class="pk-main">
+        <div class="pk-crumb" id="crumb"></div>
+        <div class="pk-card" id="stage"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- SERTIFIKAT MODALI -->
+  <div class="pk-modal" id="certModal" aria-hidden="true">
+    <div class="pk-modal-box" role="dialog" aria-modal="true">
+      <h3>Kurs sertifikati</h3>
+      <div class="sub">Prompt Engineering kursini muvaffaqiyatli yakunladingiz. Tabriklaymiz!</div>
+      <div class="pk-name-row">
+        <label for="certName">Ismingiz:</label>
+        <input id="certName" type="text" maxlength="34" placeholder="Ism Familiya" autocomplete="name">
+      </div>
+      <div class="pk-canvas-wrap"><canvas id="certCanvas" role="img" aria-label="Prompt Engineering kursi sertifikati"></canvas></div>
+      <div class="pk-modal-actions">
+        <button class="pk-btn pk-btn-pri" id="certDownload">PNG yuklab olish</button>
+        <button class="pk-btn pk-btn-sec" id="certPrint">Chop etish</button>
+        <button class="pk-btn pk-btn-sec" id="certClose">Yopish</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.body.setAttribute("data-page", "prompt-kurs.html");
+    (function () {
+      "use strict";
+      const $ = id => document.getElementById(id);
+      const PROG_KEY = "oson_prompt_progress";
+      let C, flat = [], cur = 0, openMods = new Set();
+
+      function loadProg() { try { return JSON.parse(localStorage.getItem(PROG_KEY) || "{}"); } catch (e) { return {}; } }
+      let prog = loadProg();
+      if (!prog.done) prog.done = {};
+      function saveProg() { try { localStorage.setItem(PROG_KEY, JSON.stringify(prog)); } catch (e) {} }
+
+      function ready(fn) { if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", function () { ready(fn); }); return; } if (window.PROMPT_COURSE && window.PROMPT_COURSE.modules) fn(); else setTimeout(() => ready(fn), 40); }
+      ready(init);
+      window.addEventListener("load", function () { var k = Object.keys(window).filter(function (x) { return /_COURSE$/.test(x); })[0]; var Co = k && window[k]; if (!Co || !Co.modules) return; var tot = Co.modules.reduce(function (a, m) { return a + m.lessons.length; }, 0); if (flat.length !== tot) { flat.length = 0; openMods = new Set(); init(); } });
+
+      function init() {
+        C = window.PROMPT_COURSE;
+        C.modules.forEach((m, mi) => m.lessons.forEach(l => { l._m = m; l._mi = mi; flat.push(l); }));
+        // resume to first not-done lesson, else first
+        let start = flat.findIndex(l => !prog.done[l.id]);
+        cur = start < 0 ? 0 : start;
+        if (flat[cur]) openMods.add(flat[cur]._mi);   // joriy modul ochiq
+        renderNav();
+        renderLesson(cur);
+      }
+
+      function doneCount() { return flat.filter(l => prog.done[l.id]).length; }
+      function allLessonsDone() { return flat.length > 0 && flat.every(l => prog.done[l.id]); }
+      function hasExam() { return !!(window.PROMPT_EXAM && (window.PROMPT_EXAM.questions || []).length); }
+      function examPassed() { return !!(prog.exam && prog.exam.passed); }
+      function allDone() { return !hasExam() || examPassed(); }
+      function unlocked(i) { return true; }
+      function gradeWord(s) { return s >= 90 ? "A'lo" : s >= 80 ? "Yaxshi" : "Qoniqarli"; }
+
+      function renderNav() {
+        const n = doneCount(), total = flat.length;
+        $("progTxt").textContent = n + " / " + total + " dars";
+        const pc = total ? Math.round(n / total * 100) : 0;
+        $("progPct").textContent = pc + "%";
+        $("progFill").style.width = pc + "%";
+        let html = "";
+        C.modules.forEach((m, mi) => {
+          const isOpen = openMods.has(mi);
+          const mDone = m.lessons.filter(l => prog.done[l.id]).length, mTot = m.lessons.length;
+          const allM = mDone === mTot;
+          let inner = "";
+          m.lessons.forEach(l => {
+            const gi = flat.indexOf(l);
+            const isDone = !!prog.done[l.id], isCur = gi === cur, lock = !unlocked(gi);
+            const node = isDone ? `<span class="node"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>`
+              : lock ? `<span class="node"><svg viewBox="0 0 24 24" stroke-width="2.4"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>`
+              : `<span class="node">${gi + 1}</span>`;
+            inner += `<button class="pk-ls ${isDone ? "done" : ""} ${isCur ? "cur" : ""} ${lock ? "locked" : ""}" data-i="${gi}"${lock ? ' aria-disabled="true" tabindex="-1"' : ""}>
+              ${node}<span class="nm">${l.title}</span></button>`;
+          });
+          html += `<div class="pk-mod ${isOpen ? "open" : ""}">
+            <button class="pk-mod-t ${allM ? "alldone" : ""}" data-mod="${mi}" aria-expanded="${isOpen}">
+              <span class="ms">${allM ? '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>' : (mi + 1)}</span>
+              <span class="mt">${m.title}</span>
+              <span class="mc">${mDone}/${mTot}</span>
+              <svg class="chev" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+            </button>
+            <div class="pk-mod-lessons">${inner}</div>
+          </div>`;
+        });
+        if (hasExam()) {
+          const eLock = false, ePass = examPassed(), eCur = cur === "exam";
+          const enode = ePass
+            ? `<span class="node"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>`
+            : eLock
+              ? `<span class="node"><svg viewBox="0 0 24 24" stroke-width="2.4"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>`
+              : `<span class="node" style="border-color:#d97706;color:#d97706"><svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M7 4h10v3a5 5 0 0 1-10 0z"/><path d="M12 12v4M8.5 20h7M9.5 20l.5-4M14.5 20l-.5-4"/></svg></span>`;
+          const cLock = !allDone(), gotCert = !!prog.name;
+          const cnode = gotCert
+            ? `<span class="node"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>`
+            : cLock
+              ? `<span class="node"><svg viewBox="0 0 24 24" stroke-width="2.4"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>`
+              : `<span class="node" style="border-color:#d97706;color:#d97706"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.5 13.5 17 22l-5-3-5 3 1.5-8.5"/></svg></span>`;
+          html += `<div class="pk-mod open"><div class="pk-mod-t static"><span class="ms" style="background:rgba(217,119,6,.13);color:#d97706;border:1px solid rgba(217,119,6,.34)"><svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round"><path d="M7 4h10v3a5 5 0 0 1-10 0z"/><path d="M12 12v4M8.5 20h7M9.5 20l.5-4M14.5 20l-.5-4"/></svg></span><span class="mt">Yakuniy bosqich</span></div>
+            <button class="pk-ls pk-examls ${ePass ? "done" : ""} ${eCur ? "cur" : ""} ${eLock ? "locked" : ""}" data-exam="1"${eLock ? ' aria-disabled="true" tabindex="-1"' : ""}>
+              ${enode}<span class="nm">Yakuniy imtihon${ePass ? ` · ${prog.exam.score}%` : ""}</span></button>
+            <button class="pk-ls pk-certls ${gotCert ? "done" : ""} ${cLock ? "locked" : ""}" data-cert="1"${cLock ? ' aria-disabled="true" tabindex="-1"' : ""}>
+              ${cnode}<span class="nm">Sertifikat</span></button></div>`;
+        }
+        $("nav").innerHTML = html;
+        $("nav").querySelectorAll(".pk-ls").forEach(b => b.addEventListener("click", () => {
+          if (b.dataset.exam) { goExam(); return; }
+          if (b.dataset.cert) { if (allDone()) openCert(); return; }
+          const i = +b.dataset.i;
+          if (unlocked(i)) { cur = i; renderNav(); renderLesson(i); var kb = $("kursBosh"); if (kb) kb.scrollIntoView({ behavior: "smooth" }); }
+        }));
+        $("nav").querySelectorAll(".pk-mod-t[data-mod]").forEach(b => b.addEventListener("click", () => {
+          const mi = +b.dataset.mod;
+          if (openMods.has(mi)) openMods.delete(mi); else openMods.add(mi);
+          renderNav();
+        }));
+      }
+
+      function renderLesson(i) {
+        const l = flat[i];
+        openMods.add(l._mi);   // joriy dars moduli ochiq bo'lsin
+        $("crumb").innerHTML = `Modul: <b>${l._m.title}</b>`;
+        let html = `<h1 class="pk-h1">${l.title}</h1>
+          <div class="pk-meta">
+            <span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>${l.read || "5 daqiqa"}</span>
+            <span><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Maqola</span>
+            <span><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>${(l.quiz || []).length} savol test</span>
+          </div>
+          <div class="pk-article">${l.html}</div>
+          <div class="pk-quiz" id="quiz"></div>
+          <div id="practice"></div>`;
+        $("stage").innerHTML = html;
+        renderQuiz(l, i);
+        renderPractice(l);
+      }
+
+      // Modul oxirgi darsida — amaliy mashq (baholanmaydi, mustaqil)
+      function renderPractice(l) {
+        const box = $("practice"); if (!box) return;
+        const m = l._m;
+        const isLast = m.lessons[m.lessons.length - 1].id === l.id;
+        const P = window.PROMPT_PRACTICE && window.PROMPT_PRACTICE[m.id];
+        if (!isLast || !P) { box.innerHTML = ""; return; }
+        prog.practice = prog.practice || {};
+        const saved = (prog.practice[m.id] || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        const checks = (P.checklist || []).map((c, k) => `<label><input type="checkbox" data-k="${k}"> <span>${c}</span></label>`).join("");
+        box.innerHTML = `
+          <div class="pk-practice">
+            <div class="pk-practice-h"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg></span>Modul amaliy mashqi</div>
+            <p class="task">${P.task}</p>
+            <textarea id="practiceInp" placeholder="Promptingizni shu yerga yozing... (bu yerga yozganingiz saqlanadi)">${saved}</textarea>
+            <button class="pk-reveal" id="revealBtn">Namunaviy yechim va tekshiruvni ko'rish</button>
+            <div class="pk-sample" id="sampleBox" hidden>
+              <div class="pk-ex pk-good"><span class="tag">Namunaviy prompt</span>${P.sample}</div>
+              <div class="pk-checklist"><b>O'zingizni tekshiring:</b>${checks}</div>
+            </div>
+          </div>`;
+        const inp = $("practiceInp");
+        inp.addEventListener("input", () => { prog.practice[m.id] = inp.value; saveProg(); });
+        $("revealBtn").addEventListener("click", () => { $("sampleBox").hidden = false; $("revealBtn").style.display = "none"; });
+      }
+
+      function renderQuiz(l, i) {
+        const quiz = l.quiz || [];
+        const passed = !!prog.done[l.id];
+        const last = i === flat.length - 1;
+        let html = `<div class="pk-quiz-h"><span class="ic"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>Bilimni mustahkamlash</div>
+          <p class="pk-quiz-sub">Keyingi darsga o'tish uchun barcha savolga to'g'ri javob bering. Xato bo'lsa — qayta urinib ko'rasiz.</p>`;
+        quiz.forEach((q, qi) => {
+          html += `<div class="pk-q" data-q="${qi}"><div class="pk-q-t"><span class="n">${qi + 1}.</span> ${q.q}</div>`;
+          q.o.forEach((o, oi) => {
+            html += `<div class="pk-opt" data-q="${qi}" data-o="${oi}"><span class="k">${String.fromCharCode(65 + oi)}</span><span>${o}</span></div>`;
+          });
+          html += `</div>`;
+        });
+        html += `<div class="pk-quiz-foot">
+          <button class="pk-btn pk-btn-pri" id="checkBtn">Javoblarni tekshirish</button>
+          <span class="pk-result" id="quizRes"></span>
+        </div>`;
+        $("quiz").innerHTML = html;
+
+        const picks = {};
+        $("quiz").querySelectorAll(".pk-opt").forEach(op => op.addEventListener("click", () => {
+          const qi = +op.dataset.q, oi = +op.dataset.o;
+          if (op.closest(".pk-q").classList.contains("locked-q")) return;
+          picks[qi] = oi;
+          $("quiz").querySelectorAll(`.pk-opt[data-q="${qi}"]`).forEach(x => x.classList.remove("sel", "ok", "no"));
+          op.classList.add("sel");
+        }));
+
+        function showPassedState() {
+          $("quiz").querySelectorAll(".pk-opt").forEach(x => { x.style.pointerEvents = "none"; });
+          quiz.forEach((q, qi) => { const ce = $("quiz").querySelector(`.pk-opt[data-q="${qi}"][data-o="${q.c}"]`); if (ce) ce.classList.add("ok"); });
+          const r = $("quizRes"); r.className = "pk-result pass"; r.textContent = "✓ Bu dars yakunlangan.";
+          const foot = $("quiz").querySelector(".pk-quiz-foot");
+          $("checkBtn").remove();
+          const nb = document.createElement("button");
+          nb.className = "pk-btn pk-btn-ok";
+          if (last) { setFinalBtn(nb); }
+          else { nb.innerHTML = 'Keyingi dars <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>'; nb.addEventListener("click", () => { cur = i + 1; renderNav(); renderLesson(cur); var kb = $("kursBosh"); if (kb) kb.scrollIntoView({ behavior: "smooth" }); }); }
+          foot.insertBefore(nb, $("quizRes"));
+        }
+
+        if (passed) { showPassedState(); return; }
+
+        $("checkBtn").addEventListener("click", () => {
+          if (Object.keys(picks).length < quiz.length) { const r = $("quizRes"); r.className = "pk-result fail"; r.textContent = "Iltimos, barcha savolga javob bering."; return; }
+          let correct = 0;
+          quiz.forEach((q, qi) => {
+            const sel = picks[qi];
+            $("quiz").querySelectorAll(`.pk-opt[data-q="${qi}"]`).forEach(x => x.classList.remove("ok", "no", "sel"));
+            const selEl = $("quiz").querySelector(`.pk-opt[data-q="${qi}"][data-o="${sel}"]`);
+            if (sel === q.c) { correct++; if (selEl) selEl.classList.add("ok"); }
+            else { if (selEl) selEl.classList.add("no"); const ce = $("quiz").querySelector(`.pk-opt[data-q="${qi}"][data-o="${q.c}"]`); if (ce) ce.classList.add("ok"); }
+          });
+          const r = $("quizRes");
+          if (correct === quiz.length) {
+            prog.done[l.id] = true; saveProg(); renderNav();
+            r.className = "pk-result pass"; r.textContent = `Ajoyib! ${correct}/${quiz.length} to'g'ri.`;
+            $("quiz").querySelectorAll(".pk-opt").forEach(x => { x.style.pointerEvents = "none"; });
+            $("checkBtn").remove();
+            const foot = $("quiz").querySelector(".pk-quiz-foot");
+            const nb = document.createElement("button"); nb.className = "pk-btn pk-btn-ok";
+            if (last) { setFinalBtn(nb); }
+            else { nb.innerHTML = 'Keyingi dars <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>'; nb.addEventListener("click", () => { cur = i + 1; renderNav(); renderLesson(cur); var kb = $("kursBosh"); if (kb) kb.scrollIntoView({ behavior: "smooth" }); }); }
+            foot.insertBefore(nb, r);
+          } else {
+            r.className = "pk-result fail"; r.textContent = `${correct}/${quiz.length} to'g'ri. Qizil javoblarni tuzatib, qayta tekshiring.`;
+            // allow re-pick on wrong ones
+            quiz.forEach((q, qi) => { if (picks[qi] !== q.c) { $("quiz").querySelectorAll(`.pk-opt[data-q="${qi}"]`).forEach(x => { x.classList.remove("no", "ok"); }); delete picks[qi]; } });
+          }
+        });
+      }
+
+      // ===== YAKUNIY IMTIHON =====
+      function setFinalBtn(nb) {
+        if (hasExam() && !examPassed()) {
+          nb.innerHTML = 'Yakuniy imtihonga o\'tish <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>';
+          nb.addEventListener("click", goExam);
+        } else {
+          nb.innerHTML = 'Sertifikatni olish <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.5 13.5 17 22l-5-3-5 3 1.5-8.5"/></svg>';
+          nb.addEventListener("click", openCert);
+        }
+      }
+      function goExam() {
+        if (!allLessonsDone()) return;
+        cur = "exam"; renderNav(); renderExam(); var kb = $("kursBosh"); if (kb) kb.scrollIntoView({ behavior: "smooth" });
+      }
+      function recordExam(score) {
+        const prev = (prog.exam && prog.exam.best) || 0;
+        const best = Math.max(prev, score);
+        prog.exam = { passed: true, score: best, best: best };
+        saveProg();
+      }
+      function renderExam() {
+        const E = window.PROMPT_EXAM;
+        if (!E) return;
+        const qs = E.questions, pass = E.pass || 0.7, need = Math.ceil(qs.length * pass), passPct = Math.round(pass * 100);
+        $("crumb").innerHTML = `Yakuniy bosqich: <b>Imtihon</b>`;
+        const already = examPassed();
+        let html = `<h1 class="pk-h1">Yakuniy imtihon</h1>
+          <div class="pk-meta">
+            <span><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>${qs.length} savol</span>
+            <span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>O'tish chegarasi: ${passPct}% (${need}/${qs.length})</span>
+          </div>
+          <p class="pk-lead">Bu imtihon butun kursni qamrab oladi — nazariy va amaliy savollar aralash. Har savolda bitta to'g'ri javob. <b>${passPct}%</b> va undan yuqori natija sertifikat olish uchun yetarli.</p>`;
+        if (already) {
+          html += `<div class="pk-tip"><span class="ci"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><div><b>Imtihondan o'tgansiz — eng yaxshi natija: ${prog.exam.score}% (${gradeWord(prog.exam.score)})</b>Sertifikatni hoziroq olishingiz yoki natijani yaxshilash uchun qayta topshirishingiz mumkin.</div></div>
+            <div class="pk-quiz-foot" style="margin:14px 0 4px">
+              <button class="pk-btn pk-btn-ok" id="examCertBtn"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.5 13.5 17 22l-5-3-5 3 1.5-8.5"/></svg> Sertifikatni olish</button>
+            </div>`;
+        }
+        html += `<div class="pk-quiz" id="examQuiz" style="border-top:2px dashed var(--border);margin-top:22px">
+          <div class="pk-quiz-h"><span class="ic"><svg viewBox="0 0 24 24"><path d="M7 4h10v3a5 5 0 0 1-10 0z"/><path d="M12 12v4M8.5 20h7M9.5 20l.5-4M14.5 20l-.5-4"/></svg></span>${already ? "Qayta topshirish" : "Imtihon savollari"}</div>
+          <p class="pk-quiz-sub">Barcha savolga javob bering va «Imtihonni yakunlash» tugmasini bosing.</p>`;
+        qs.forEach((q, qi) => {
+          html += `<div class="pk-q" data-q="${qi}"><div class="pk-q-t"><span class="n">${qi + 1}.</span> ${q.q}</div>`;
+          q.o.forEach((o, oi) => {
+            html += `<div class="pk-opt" data-q="${qi}" data-o="${oi}"><span class="k">${String.fromCharCode(65 + oi)}</span><span>${o}</span></div>`;
+          });
+          html += `</div>`;
+        });
+        html += `<div class="pk-quiz-foot">
+            <button class="pk-btn pk-btn-pri" id="examSubmit">Imtihonni yakunlash</button>
+            <span class="pk-result" id="examRes"></span>
+          </div></div>`;
+        $("stage").innerHTML = html;
+        if (already) $("examCertBtn").addEventListener("click", openCert);
+
+        const picks = {};
+        const eq = $("examQuiz");
+        eq.querySelectorAll(".pk-opt").forEach(op => op.addEventListener("click", () => {
+          if (op.classList.contains("locked-pick")) return;
+          const qi = +op.dataset.q, oi = +op.dataset.o;
+          picks[qi] = oi;
+          eq.querySelectorAll(`.pk-opt[data-q="${qi}"]`).forEach(x => x.classList.remove("sel", "ok", "no"));
+          op.classList.add("sel");
+        }));
+
+        $("examSubmit").addEventListener("click", () => {
+          const res = $("examRes");
+          if (Object.keys(picks).length < qs.length) {
+            const miss = qs.length - Object.keys(picks).length;
+            res.className = "pk-result fail"; res.textContent = `Iltimos, barcha savolga javob bering (${miss} ta qoldi).`;
+            return;
+          }
+          let correct = 0;
+          qs.forEach((q, qi) => {
+            const sel = picks[qi];
+            eq.querySelectorAll(`.pk-opt[data-q="${qi}"]`).forEach(x => { x.classList.remove("ok", "no", "sel"); x.classList.add("locked-pick"); x.style.pointerEvents = "none"; });
+            const selEl = eq.querySelector(`.pk-opt[data-q="${qi}"][data-o="${sel}"]`);
+            if (sel === q.c) { correct++; if (selEl) selEl.classList.add("ok"); }
+            else { if (selEl) selEl.classList.add("no"); const ce = eq.querySelector(`.pk-opt[data-q="${qi}"][data-o="${q.c}"]`); if (ce) ce.classList.add("ok"); }
+          });
+          const score = Math.round(correct / qs.length * 100);
+          const ok = correct >= need;
+          $("examSubmit").remove();
+          const foot = eq.querySelector(".pk-quiz-foot");
+          if (ok) {
+            recordExam(score); renderNav();
+            res.className = "pk-result pass"; res.textContent = `Tabriklaymiz! ${correct}/${qs.length} to'g'ri — ${score}% (${gradeWord(score)}).`;
+            const nb = document.createElement("button"); nb.className = "pk-btn pk-btn-ok";
+            nb.innerHTML = 'Sertifikatni olish <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.5 13.5 17 22l-5-3-5 3 1.5-8.5"/></svg>';
+            nb.addEventListener("click", openCert);
+            foot.insertBefore(nb, res);
+          } else {
+            res.className = "pk-result fail"; res.textContent = `${correct}/${qs.length} to'g'ri — ${score}%. O'tish uchun ${need}/${qs.length} kerak. Yashil javoblarni o'rganib, qayta urinib ko'ring.`;
+            const nb = document.createElement("button"); nb.className = "pk-btn pk-btn-pri";
+            nb.innerHTML = '<svg viewBox="0 0 24 24"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg> Qayta topshirish';
+            nb.addEventListener("click", () => { renderExam(); var kb = $("kursBosh"); if (kb) kb.scrollIntoView({ behavior: "smooth" }); });
+            foot.insertBefore(nb, res);
+          }
+          eq.scrollIntoView({ behavior: "smooth", block: "end" });
+        });
+      }
+
+      // ===== SERTIFIKAT (chizish — prompt-cert-draw.js / window.PromptCert) =====
+      function openCert() {
+        if (!allDone()) return;
+        $("certName").value = prog.name || localStorage.getItem("tezyoz_name") || "";
+        drawCert(); $("certModal").classList.add("show"); $("certModal").setAttribute("aria-hidden", "false"); setTimeout(() => $("certName").focus(), 60);
+      }
+      function drawCert() {
+        const raw = ($("certName").value || "").trim(); prog.name = raw; saveProg();
+        const _d = new Date();
+        if (window.PromptCert) window.PromptCert.draw($("certCanvas"), { name: raw || "Foydalanuvchi", dateISO: _d.getFullYear() + "-" + (_d.getMonth() + 1) + "-" + _d.getDate() });
+      }
+      $("certName").addEventListener("input", drawCert);
+      function closeCert() { $("certModal").classList.remove("show"); $("certModal").setAttribute("aria-hidden", "true"); }
+      $("certClose").addEventListener("click", closeCert);
+      $("certModal").addEventListener("click", e => { if (e.target === $("certModal")) closeCert(); });
+      document.addEventListener("keydown", e => { if (e.key === "Escape" && $("certModal").classList.contains("show")) closeCert(); });
+      $("certDownload").addEventListener("click", () => {
+        const safe = (($("certName").value || "foydalanuvchi").trim().toLowerCase().replace(/[^a-z0-9]+/g, "_").slice(0, 16)) || "foydalanuvchi";
+        $("certCanvas").toBlob(blob => { const url = URL.createObjectURL(blob), a = document.createElement("a"); a.href = url; a.download = "prompt-kurs-sertifikat-" + safe + ".png"; document.body.appendChild(a); a.click(); document.body.removeChild(a); setTimeout(() => URL.revokeObjectURL(url), 1000); }, "image/png");
+      });
+      $("certPrint").addEventListener("click", () => { const data = $("certCanvas").toDataURL("image/png"); const w = window.open("", "_blank"); if (!w) return; w.document.write('<title>Sertifikat</title><body style="margin:0;display:flex;justify-content:center"><img src="http://osonstudio.uz/' + data + '" style="max-width:100%" onload="setTimeout(function(){window.print()},100)"></body>'); w.document.close(); });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Курсы</title>
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .home-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 120px);
+      text-align: center;
+      padding: 24px;
+    }
+    .home-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 48px 32px;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(8px);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .home-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.15);
+    }
+    .home-logo {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2, #8b5cf6));
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 24px;
+      color: #fff;
+      font-size: 32px;
+      font-weight: 800;
+      box-shadow: 0 8px 24px -6px rgba(91, 91, 214, 0.5);
+    }
+    .home-title {
+      font-size: clamp(28px, 4vw, 36px);
+      font-weight: 800;
+      margin: 0 0 12px;
+      color: var(--text);
+    }
+    .home-subtitle {
+      font-size: 15px;
+      color: var(--muted);
+      margin: 0 0 32px;
+      line-height: 1.6;
+    }
+    .home-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2, #8b5cf6));
+      color: #fff;
+      padding: 16px 36px;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 800;
+      text-decoration: none;
+      box-shadow: 0 10px 25px -8px rgba(91, 91, 214, 0.6);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .home-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px -10px rgba(91, 91, 214, 0.8);
+      text-decoration: none;
+    }
+    .home-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+  </style>
+</head>
+<body>
+  <main class="home-hero">
+    <div class="home-card">
+      <div class="home-logo" data-no-i18n>O</div>
+      <h1 class="home-title">Платформа</h1>
+      <p class="home-subtitle">Современная платформа бесплатных интерактивных онлайн-курсов на узбекском языке.</p>
+      <a href="../kurslar.html" class="home-btn">
+        <span>Курсы</span>
+        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+  </main>
+</body>
+</html>

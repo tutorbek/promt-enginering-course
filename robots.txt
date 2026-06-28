@@ -1,0 +1,19 @@
+# Oson Studio — https://osonstudio.uz
+User-agent: *
+Allow: /
+Disallow: /_vfrag/
+Disallow: /*.bak$
+Disallow: /assemble-*.ps1$
+
+# AI scrapers (ixtiyoriy — kontent himoyasi)
+User-agent: GPTBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+Sitemap: https://osonstudio.uz/sitemap.xml
+Host: https://osonstudio.uz
