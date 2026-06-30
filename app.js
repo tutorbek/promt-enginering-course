@@ -275,7 +275,7 @@
 
   // ===== PASSWORD PROTECTION FOR COURSES =====
   const isCoursePage = page === "kurslar.html" || page.endsWith("-kurs.html") || page.startsWith("kurs-") || page.endsWith("-resurslar.html");
-  if (isCoursePage && localStorage.getItem("kurs_password") !== "Insight") {
+  if (isCoursePage && localStorage.getItem("kurs_password") !== "OzimSila") {
     const showPasswordOverlay = () => {
       const style = document.createElement("style");
       style.textContent = `
@@ -420,8 +420,8 @@
       const card = overlay.querySelector("#pwCard");
 
       const checkPassword = () => {
-        if (input.value === "Insight") {
-          localStorage.setItem("kurs_password", "Insight");
+        if (input.value === "OzimSila") {
+          localStorage.setItem("kurs_password", "OzimSila");
           overlay.remove();
           document.body.style.overflow = "";
         } else {
